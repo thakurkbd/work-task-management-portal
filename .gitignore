@@ -1,0 +1,74 @@
+# work-task-management-portal
+
+A production-ready work task management portal built with PHP 8+, MySQL 8+, Bootstrap 5, and modern front-end techniques.
+
+## Features included in Phase 1
+
+- Secure PDO-based database connection
+- Session-aware authentication with login/logout
+- Role and permission foundation
+- Bootstrap 5 dashboard shell
+- Department, role, permission, user, and task tables
+- Setup script to initialize the database
+- Default super admin account
+
+## Project structure
+
+- `config/` - app and DB configuration
+- `includes/` - auth, session, layout helpers
+- `database/` - SQL schema and installer
+- `assets/` - CSS and JS files
+- `admin/`, `manager/`, `employee/`, `viewer/` - role-based dashboard entry points
+
+## Quick start
+
+1. Create MySQL database:
+
+```sql
+CREATE DATABASE work_task_portal CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+2. Update DB credentials in `config/database.php` if needed.
+
+3. Run the installer:
+
+```bash
+php database/setup.php
+```
+
+4. Start a local PHP server:
+
+```bash
+php -S localhost:8000
+```
+
+5. Open in browser:
+
+```text
+http://localhost:8000/login.php
+```
+
+## Default login
+
+- Email: `admin@company.com`
+- Password: `Admin@123`
+
+## Security notes
+
+- Passwords are hashed using PHP `password_hash()`
+- CSRF protection is included on the login form
+- Session timeout is enabled
+- All database queries use prepared statements
+
+## Next phases
+
+The project will continue with:
+
+- User management
+- Employee and department management
+- Task CRUD + subtasks + comments
+- Kanban + calendar
+- Notifications + email
+- Reporting and export
+- Attendance and leave
+- Audit logs and security hardening
