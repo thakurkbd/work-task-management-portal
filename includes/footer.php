@@ -1,8 +1,6 @@
 <?php
-require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/functions.php';
-
-$flash = getFlash();
+require_once __DIR__ . '/../config/database.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,16 +10,14 @@ $flash = getFlash();
     <title><?= APP_NAME; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="<?= (str_contains($_SERVER['SCRIPT_NAME'], '/admin/') ? '../' : '') ?>assets/css/style.css">
 </head>
 <body>
-    <?php if ($flash): ?>
+    <?php $flash = getFlash(); if ($flash): ?>
         <div class="toast-container position-fixed top-0 end-0 p-3">
             <div class="toast show align-items-center text-bg-<?= e($flash['type']) ?> border-0" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="d-flex">
-                    <div class="toast-body">
-                        <?= e($flash['message']); ?>
-                    </div>
+                    <div class="toast-body"><?= e($flash['message']); ?></div>
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
             </div>
@@ -30,7 +26,7 @@ $flash = getFlash();
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
         <div class="container-fluid px-4">
-            <a class="navbar-brand fw-bold" href="dashboard.php"><i class="fa-solid fa-briefcase me-2"></i><?= APP_NAME; ?></a>
+            <a class="navbar-brand fw-bold" href="<?= (str_contains($_SERVER['SCRIPT_NAME'], '/admin/') ? '../' : '') ?>dashboard.php"><i class="fa-solid fa-briefcase me-2"></i><?= APP_NAME; ?></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -43,14 +39,13 @@ $flash = getFlash();
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-                            <i class="fa-solid fa-user-circle me-2"></i>
-                            <?= e($_SESSION['user_name'] ?? 'User'); ?>
+                            <i class="fa-solid fa-user-circle me-2"></i><?= e($_SESSION['user_name'] ?? 'User'); ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="dashboard.php"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a></li>
+                            <li><a class="dropdown-item" href="<?= (str_contains($_SERVER['SCRIPT_NAME'], '/admin/') ? '../' : '') ?>dashboard.php"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a></li>
                             <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user me-2"></i>Profile</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="logout.php"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
+                            <li><a class="dropdown-item text-danger" href="<?= (str_contains($_SERVER['SCRIPT_NAME'], '/admin/') ? '../' : '') ?>logout.php"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -74,10 +69,13 @@ $flash = getFlash();
                 </div>
 
                 <nav class="nav flex-column gap-1">
-                    <a class="nav-link active" href="dashboard.php"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a>
+                    <a class="nav-link active" href="<?= (str_contains($_SERVER['SCRIPT_NAME'], '/admin/') ? '../' : '') ?>dashboard.php"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a>
                     <a class="nav-link" href="#"><i class="fa-solid fa-list-check me-2"></i>My Tasks</a>
                     <a class="nav-link" href="#"><i class="fa-solid fa-folder-tree me-2"></i>Projects</a>
-                    <a class="nav-link" href="#"><i class="fa-solid fa-users me-2"></i>Employees</a>
+                    <a class="nav-link" href="<?= (str_contains($_SERVER['SCRIPT_NAME'], '/admin/') ? '' : '../') ?>admin/users.php"><i class="fa-solid fa-users me-2"></i>Users</a>
+                    <a class="nav-link" href="<?= (str_contains($_SERVER['SCRIPT_NAME'], '/admin/') ? '' : '../') ?>admin/employees.php"><i class="fa-solid fa-user-tie me-2"></i>Employees</a>
+                    <a class="nav-link" href="<?= (str_contains($_SERVER['SCRIPT_NAME'], '/admin/') ? '' : '../') ?>admin/departments.php"><i class="fa-solid fa-building me-2"></i>Departments</a>
+                    <a class="nav-link" href="<?= (str_contains($_SERVER['SCRIPT_NAME'], '/admin/') ? '' : '../') ?>admin/roles.php"><i class="fa-solid fa-shield-halved me-2"></i>Roles</a>
                     <a class="nav-link" href="#"><i class="fa-solid fa-calendar-days me-2"></i>Calendar</a>
                     <a class="nav-link" href="#"><i class="fa-solid fa-chart-line me-2"></i>Reports</a>
                     <a class="nav-link" href="#"><i class="fa-solid fa-gear me-2"></i>Settings</a>

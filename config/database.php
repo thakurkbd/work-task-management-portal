@@ -22,6 +22,6 @@ function getDbConnection(): PDO
     try {
         return new PDO($dsn, $user, $pass, $options);
     } catch (PDOException $e) {
-        die('Database connection failed. Please create the database and run the setup script.');
+        throw new RuntimeException('Unable to connect to the database. Please create the database and run the setup script.');
     }
 }

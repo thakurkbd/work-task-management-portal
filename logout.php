@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__ . '/config/app.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/includes/functions.php';
@@ -14,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if (empty($email) || empty($password)) {
+    if ($email === '' || $password === '') {
         flash('danger', 'Email and password are required.');
         redirect('login.php');
     }
@@ -25,49 +24,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password_hash']) && $user['status'] === 'active') {
-        $_SESSION['user_id'] = (int)$user['id'];
+        $_SESSION['user_id'] = (int) $user['id'];
         $_SESSION['user_name'] = $user['full_name'];
         $_SESSION['user_email'] = $user['email'];
-        $_SESSION['user_role_id'] = (int)$user['role_id'];
-        $_SESSION['user_role'] = $user['role_name'];
-        $_SESSION['user_role_slug'] = $user['role_slug'];
+        $_SESSION['user_role_id'] = (int) ($user['role_id'] ?? 0);
+        $_SESSION['user_role'] = $user['role_name'] ?? 'User';
+        $_SESSION['user_role_slug'] = $user['role_slug'] ?? 'employee';
         $_SESSION['last_activity'] = time();
-        $_SESSION['permissions'] = loadUserPermissions((int)$user['role_id']);
+        $_SESSION['permissions'] = loadUserPermissions((int)($user['role_id'] ?? 0));
 
         $pdo->prepare('UPDATE users SET last_login_at = NOW() WHERE id = :id')->execute(['id' => $user['id']]);
-
-        $logStmt = $pdo->prepare('INSERT INTO login_logs (user_id, ip_address, user_agent, status) VALUES (:user_id, :ip_address, :user_agent, :status)');
-        $logStmt->execute([
+        $pdo->prepare('INSERT INTO login_logs (user_id, ip_address, user_agent, status) VALUES (:user_id, :ip_address, :user_agent, :status)')->execute([
             'user_id' => $user['id'],
             'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
             'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
             'status' => 'success',
         ]);
 
-        $route = match ($user['role_slug']) {
-            'super_admin', 'admin' => 'admin/dashboard.php',
+        flash('success', 'Welcome back, ' . $user['full_name'] . '!');
+
+        $roleRedirect = match ($user['role_slug']) {
+            'super_admin' => 'admin/dashboard.php',
+            'admin' => 'admin/dashboard.php',
             'manager' => 'manager/dashboard.php',
             'employee' => 'employee/dashboard.php',
             default => 'dashboard.php',
         };
 
-        flash('success', 'Welcome back, ' . $user['full_name'] . '!');
-        redirect($route);
+        redirect($roleRedirect);
     }
 
     if ($user) {
-        $logStmt = $pdo->prepare('INSERT INTO login_logs (user_id, ip_address, user_agent, status) VALUES (:user_id, :ip_address, :user_agent, :status)');
-        $logStmt->execute([
+        $pdo->prepare('INSERT INTO login_logs (user_id, ip_address, user_agent, status) VALUES (:user_id, :ip_address, :user_agent, :status)')->execute([
             'user_id' => $user['id'],
             'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
             'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
             'status' => 'failed',
         ]);
-        flash('danger', 'Invalid credentials or account is inactive.');
-    } else {
-        flash('danger', 'No account found with that email address.');
     }
 
+    flash('danger', 'Invalid credentials or account inactive.');
     redirect('login.php');
 }
 ?>
@@ -94,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <?php $flash = getFlash(); if ($flash): ?>
-                    <div class="alert alert-<?= e($flash['type']); ?> rounded-3"><?= e($flash['message']); ?></div>
+                    <div class="alert alert-<?= e($flash['type']) ?> rounded-3"><?= e($flash['message']); ?></div>
                 <?php endif; ?>
 
                 <form method="POST" action="login.php" novalidate>

@@ -73,3 +73,12 @@ body {
     color: #64748b;
     background: #f8fafc;
 }
+
+.page-header {
+    margin-bottom: 1.5rem;
+}
+
+.badge-soft-danger { background: #fee2e2; color: #991b1b; }
+.badge-soft-success { background: #dcfce7; color: #166534; }
+.badge-soft-warning { background: #fef3c7; color: #92400e; }
+.badge-soft-info { background: #dbeafe; color: #1d4ed8; }
