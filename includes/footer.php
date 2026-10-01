@@ -70,7 +70,7 @@ require_once __DIR__ . '/../config/database.php';
 
                 <nav class="nav flex-column gap-1">
                     <a class="nav-link active" href="<?= (str_contains($_SERVER['SCRIPT_NAME'], '/admin/') ? '../' : '') ?>dashboard.php"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a>
-                    <a class="nav-link" href="#"><i class="fa-solid fa-list-check me-2"></i>My Tasks</a>
+                    <a class="nav-link" href="<?= (str_contains($_SERVER['SCRIPT_NAME'], '/admin/') ? '../' : '') ?>tasks.php"><i class="fa-solid fa-list-check me-2"></i>Tasks</a>
                     <a class="nav-link" href="#"><i class="fa-solid fa-folder-tree me-2"></i>Projects</a>
                     <a class="nav-link" href="<?= (str_contains($_SERVER['SCRIPT_NAME'], '/admin/') ? '' : '../') ?>admin/users.php"><i class="fa-solid fa-users me-2"></i>Users</a>
                     <a class="nav-link" href="<?= (str_contains($_SERVER['SCRIPT_NAME'], '/admin/') ? '' : '../') ?>admin/employees.php"><i class="fa-solid fa-user-tie me-2"></i>Employees</a>
